@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+<div class="text-center" style="margin-top: 50px;">
+  <h1>Wealth Watcher</h1>
+  <p>Manage your finances easily and efficiently.</p>
+</div>
+<div id="accountsChart" class="plotly-graph-div">
+      {{ accounts_plot_div|safe }}
+  </div>
+  <div id="financialsChart" class="plotly-graph-div">
+    {{ financials_plot_div|safe }}
+</div>
+
+    <div class='text-center my-3'>
+        <a href="{{ url_for('accounts') }}" class="btn btn-primary btn-lg btn-margin">Accounts</a>
+        <a href="{{ url_for('budgets') }}" class="btn btn-primary btn-lg btn-margin">Budgets</a>
+        <a href="{{ url_for('goals') }}" class="btn btn-primary btn-lg btn-margin">Goals</a>
+        <a href="{{ url_for('transactions') }}" class="btn btn-primary btn-lg btn-margin">Transactions</a>
+    </div>
+
+{% endblock %}

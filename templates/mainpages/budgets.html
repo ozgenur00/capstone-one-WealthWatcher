@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Your Budgets{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Your Budgets</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div id="budget-chart">
+        {{ budget_chart_div|safe }}
+      </div>
+
+    <table class="table table-bg-color">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for budget in budgets %}
+            <tr>
+                <td>{{ budget.category.name }}</td>
+                <td>${{ '%.2f'|format(budget.amount) }}</td>
+                <td>{{ budget.start_date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ budget.end_date.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    <form action="{{ url_for('delete_budget', budget_id=budget.id) }}" method="POST">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <a href="{{ url_for('setbudget') }}" class="btn btn-primary btn-lg btn-margin">Set New Budget</a>
+</div>
+
+{% endblock %}

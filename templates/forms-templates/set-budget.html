@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Set a Budget{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Set a Budget</h2>
+    <form method="POST" action="{{ url_for('setbudget') }}">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+            {{ form.category.label(class="form-control-label") }}
+            {{ form.category(class="form-control") }}
+            {% for error in form.category.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.amount.label(class="form-control-label") }}
+            {{ form.amount(class="form-control") }}
+            {% for error in form.amount.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.start_date.label(class="form-control-label") }}
+            {{ form.start_date(class="form-control") }}
+            {% for error in form.start_date.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.end_date.label(class="form-control-label") }}
+            {{ form.end_date(class="form-control") }}
+            {% for error in form.end_date.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+</div>
+<div>{{ budget_chart_div|safe }}</div>
+{% endblock %}

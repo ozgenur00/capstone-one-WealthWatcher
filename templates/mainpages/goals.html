@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Your Goals{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Your Goals</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+    
+    <table class="table table-bg-color">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Target Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for goal in goals %}
+            <tr>
+                <td>{{ goal.name }}</td>
+                <td>${{ goal.target_amount }}</td>
+                <td>
+                    <form action="{{ url_for('delete_goal', goal_id=goal.id) }}" method="POST">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div>
+    <a href="{{ url_for('setgoal') }}" class="btn btn-primary btn-lg btn-margin">Set New Goal</a>
+</div>
+{% endblock %}

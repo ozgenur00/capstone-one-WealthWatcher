@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Set a Goal{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Set a Goal</h2>
+    <form method="POST" action="{{ url_for('setgoal') }}">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+            {{ form.name.label(class="form-control-label") }}
+            {{ form.name(class="form-control") }}
+            {% for error in form.name.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.target_amount.label(class="form-control-label") }}
+            {{ form.target_amount(class="form-control") }}
+            {% for error in form.target_amount.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+</div>
+{% endblock %}

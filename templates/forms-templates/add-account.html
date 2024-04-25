@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Add an Account{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Add an Account</h2>
+    <form method="POST" action="{{ url_for('addaccount') }}">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+            {{ form.name.label(class="form-control-label") }}
+            {{ form.name(class="form-control") }}
+            {% for error in form.name.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.account_type.label(class="form-control-label") }}
+            {{ form.account_type(class="form-control") }}
+            {% for error in form.account_type.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.balance.label(class="form-control-label") }}
+            {{ form.balance(class="form-control") }}
+            {% for error in form.balance.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+</div>
+{% endblock %}

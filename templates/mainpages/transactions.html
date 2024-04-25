@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Your Transactions{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Your Transactions</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+    
+    <table class="table table-bg-color">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.date }}</td>
+                <td>{{ transaction.category.name }}</td>
+                <td>${{ transaction.amount  }}</td>
+                <td>
+                    <form action="{{ url_for('delete_transaction', transaction_id=transaction.id) }}" method="POST">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div>
+    <a href="{{ url_for('addtransaction') }}" class="btn btn-primary btn-lg btn-margin">Add New Transaction</a>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Add a Transaction{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Add a Transaction</h2>
+    <form method="POST" action="{{ url_for('addtransaction') }}">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+            {{ form.account_id.label(class="form-control-label") }}
+            {{ form.account_id(class="form-control") }}
+            {% for error in form.account_id.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.type.label(class="form-control-label") }}
+            {{ form.type(class="form-control") }}
+            {% for error in form.type.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>        
+        
+        <div class="form-group">
+            {{ form.description.label(class="form-control-label") }}
+            {{ form.description(class="form-control") }}
+            {% for error in form.description.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.amount.label(class="form-control-label") }}
+            {{ form.amount(class="form-control") }}
+            {% for error in form.amount.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.date.label(class="form-control-label") }}
+            {{ form.date(class="form-control") }}
+            {% for error in form.date.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
+
+        <div class="form-group" id="category-group" style="display:none;">
+            {{ form.category.label(class="form-control-label") }}
+            {{ form.category(class="form-control") }}
+            {% for error in form.category.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+</div>
+
+<!-- Function to toggle the category field based on transaction type -->
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        function toggleCategoryField() {
+            const transactionTypeSelect = document.querySelector("select[name='type']");
+            const categoryGroup = document.getElementById("category-group");
+            if (transactionTypeSelect.value === "expense") {
+                categoryGroup.style.display = '';
+            } else {
+                categoryGroup.style.display = 'none';
+            }
+        }
+        document.querySelector("select[name='type']").addEventListener("change", toggleCategoryField);
+        toggleCategoryField();
+    });
+    </script>
+    
+{% endblock %}

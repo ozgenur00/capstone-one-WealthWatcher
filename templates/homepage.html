@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+    <div class="text-center" style="margin-top: 50px;">
+        <h1>Wealth Watcher</h1>
+        <p>Manage your finances easily and efficiently.</p>
+        <div>
+            <a href="{{ url_for('registration') }}" class="btn btn-primary">Sign Up</a>
+            <a href="{{ url_for('login') }}" class="btn btn-secondary">Login</a>
+        </div>
+    </div>
+{% endblock %}
