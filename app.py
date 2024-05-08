@@ -19,20 +19,22 @@ from sqlalchemy import extract, func
 
 
 
+
 # Initialize your Flask app instance
 app = Flask(__name__)
 
 # App configuration
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///financemanager"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = False
+app.config['SQLALCHEMY_ECHO'] = True
+app.config['DEBUG'] = True
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 CURR_USER_KEY = "user_id"
 migrate = Migrate(app, db)
 
 
-toolbar = DebugToolbarExtension(app)
+# toolbar = DebugToolbarExtension(app)
 
 # Connect the database to the Flask app
 connect_db(app)
@@ -222,6 +224,17 @@ def generate_financials_chart(user_id):
 
 
 ##########homepages, login, logout, signup########################################
+@app.route('/test-commit')
+def test_commit():
+    user = User.query.first()
+    if user:
+        user.last_login = datetime.utcnow()  # Assuming there's a last_login field
+        db.session.commit()
+        return "Commit successful"
+    return "No user found"
+
+
+
 @app.route('/')
 def home():
 
@@ -237,7 +250,7 @@ def after_login():
         transactions = Transactions.query.filter_by(user_id=g.user.id).order_by(Transactions.date.desc()).all()
         budgets = Budgets.query.filter_by(user_id=g.user.id).all()
         goals = Goals.query.filter_by(user_id=g.user.id).all()
-
+        print(session) 
         return render_template('main-page.html', accounts=accounts, transactions=transactions,
                                budgets=budgets, goals=goals, accounts_plot_div=accounts_plot_div,
                                financials_plot_div=financials_plot_div)
@@ -300,13 +313,13 @@ def logout():
 
 
 #######adding account, transaction, setting goal, budget###########
-@app.route('/addaccount', methods=["GET", "POST"])
+@app.route('/account/add', methods=["GET", "POST"])
 def addaccount():
     """Adding bank account"""
     if 'user_id' not in session:
         flash("You must be logged in to add an account.", "warning")
         return redirect(url_for('login'))
-
+        print(session) 
     form = AccountCreationForm()
 
     if form.validate_on_submit():
@@ -315,7 +328,7 @@ def addaccount():
                                balance=form.balance.data,
                                user_id=session['user_id'],
                                )
-        
+        print(session) 
         db.session.add(new_account)
         try:
             db.session.commit()
@@ -330,7 +343,7 @@ def addaccount():
     return render_template('forms-templates/add-account.html', form=form)
 
 
-@app.route('/addtransaction', methods=['GET', 'POST'])
+@app.route('/transaction/add', methods=['GET', 'POST'])
 def addtransaction():
     if 'user_id' not in session:
         flash("You must be logged in to add a transaction.", "warning")
@@ -391,7 +404,7 @@ def addtransaction():
 
 
         
-@app.route('/setbudget', methods=["GET", "POST"])
+@app.route('/budget/set', methods=["GET", "POST"])
 def setbudget():
     if 'user_id' not in session:
         flash("You must be logged in to set a budget.", "warning")
@@ -401,6 +414,7 @@ def setbudget():
 
 
     form.category.choices = [(str(c.id), c.name) for c in Category.query.order_by('name').all()]
+    print("Category Choices:", form.category.choices)
 
     if form.validate_on_submit():
         category_id = int(form.category.data)
@@ -434,7 +448,7 @@ def setbudget():
 
 
 
-@app.route('/setgoal', methods=["GET", "POST"])
+@app.route('/goal/set', methods=["GET", "POST"])
 def setgoal():
     if 'user_id' not in session:
         flash("You must be logged in to set a budget.", "warning")
@@ -463,7 +477,7 @@ def setgoal():
 
 #####goals, transactions, accounts, budgets page###################
 
-@app.route('/accounts', methods=["GET", "POST"])
+@app.route('/account')
 def accounts():
     if 'user_id' not in session:
         flash("You must be logged in to view accounts.", "warning")
@@ -477,7 +491,7 @@ def accounts():
 
 
 
-@app.route('/budgets')
+@app.route('/budget')
 def budgets():
     if 'user_id' not in session:
         flash("You must be logged in to view accounts.", "warning")
@@ -491,7 +505,7 @@ def budgets():
 
     return render_template('mainpages/budgets.html', budget_chart_div=budget_chart_div, budgets=budgets)
 
-@app.route('/goals')
+@app.route('/goal')
 def goals():
     if 'user_id' not in session:
         flash("You must be logged in to view accounts.", "warning")
@@ -501,7 +515,7 @@ def goals():
 
     return render_template('mainpages/goals.html', goals=user_goals)
 
-@app.route('/transactions')
+@app.route('/transaction')
 def transactions():
     if 'user_id' not in session:
         flash("You must be logged in to view accounts.", "warning")
@@ -514,7 +528,7 @@ def transactions():
 
 ######Deleting goals, transactions, acccounts and budgets##############
 
-@app.route('/delete_account/<int:account_id>', methods=['POST'])
+@app.route('/account/delete/<int:account_id>', methods=['POST'])
 def delete_account(account_id):
     if 'user_id' not in session:
         flash("You must be logged in to perform this action.", "warning")
@@ -530,7 +544,7 @@ def delete_account(account_id):
     flash("Account deleted successfully.", "success")
     return redirect(url_for('accounts'))
 
-@app.route('/delete_goal/<int:goal_id>', methods=["POST"])
+@app.route('/goal/delete/<int:goal_id>', methods=["POST"])
 def delete_goal(goal_id):
     if 'user_id' not in session:
         flash("You must be logged in to perform this action.", "warning")
@@ -545,7 +559,7 @@ def delete_goal(goal_id):
     flash("Goal deleted successfully.", "success")
     return redirect(url_for('goals'))
 
-@app.route('/delete_budget/<int:budget_id>', methods=["POST"])
+@app.route('/budget/delete/<int:budget_id>', methods=["POST"])
 def delete_budget(budget_id):
     if 'user_id' not in session:
         flash("You must be logged in to perform this action.", "warning")
@@ -559,7 +573,7 @@ def delete_budget(budget_id):
     flash("budget deleted successfully.", "success")
     return redirect(url_for('budgets'))
 
-@app.route('/delete_transaction/<int:transaction_id>', methods=["POST"])
+@app.route('/transaction/delete/<int:transaction_id>', methods=["POST"])
 def delete_transaction(transaction_id):
     if 'user_id' not in session:
         flash("Yu must be logged in to perform this action.", "warning")

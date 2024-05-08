@@ -21,7 +21,7 @@ with app.app_context():
     for category_name in categories:
         category = Category(name=category_name)
         db.session.add(category)
-    db.session.commit()  # Commit after adding all categories
+        db.session.commit()  # Commit after adding all categories
 
     # Create a user and hash their password
     user_password = bcrypt.generate_password_hash('your_plain_text_password').decode('utf-8')
