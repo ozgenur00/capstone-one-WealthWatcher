@@ -39,6 +39,10 @@ migrate = Migrate(app, db)
 # Connect the database to the Flask app
 connect_db(app)
 
+@app.before_first_request
+def launch():
+    upgrade()
+
 @app.before_request
 def add_user_to_g():
     """If we're logged in, add curr user to Flask global."""
