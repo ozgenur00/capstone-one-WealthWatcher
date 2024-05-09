@@ -32,6 +32,9 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 CURR_USER_KEY = "user_id"
 migrate = Migrate(app, db)
+@app.before_first_request
+def launch():
+    upgrade()
 
 
 # toolbar = DebugToolbarExtension(app)
@@ -39,9 +42,6 @@ migrate = Migrate(app, db)
 # Connect the database to the Flask app
 connect_db(app)
 
-@app.before_first_request
-def launch():
-    upgrade()
 
 @app.before_request
 def add_user_to_g():
