@@ -24,7 +24,7 @@ from sqlalchemy import extract, func
 app = Flask(__name__)
 
 # App configuration
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///financemanager"
+app.config['SQLALCHEMY_DATABASE_URI'] = (os.environ.get('DATABASE_URL', 'postgresql:///financemanager'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['DEBUG'] = True
